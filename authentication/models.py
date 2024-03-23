@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 
 # Create your models here.
@@ -6,6 +8,8 @@ from django.contrib.auth.models import (
 
 from django.db import models
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from config import settings
 
 
 class UserManager(BaseUserManager):
@@ -35,13 +39,31 @@ class UserManager(BaseUserManager):
 AUTH_PROVIDERS = {'facebook': 'facebook', 'google': 'google',
                   'twitter': 'twitter', 'email': 'email'}
 
+GENDER_CHOOSES = [
+    ('erkak', 'Erkak'),
+    ('ayol', 'Ayol'),
+]
+
+STATUS_CHOOSES = [
+    ('yangi_k', 'Yangi kitobxon'),
+    ('k', 'Kitobxon'),
+    ('kuchli_k', 'Kuchli kitobxon'),
+]
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True, db_index=True)
     email = models.EmailField(max_length=255, unique=True, db_index=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOOSES, default='')
+    status = models.CharField(max_length=30, choices=STATUS_CHOOSES, default='yangi_k')
+    birth_date = models.DateField(null=True, blank=True)
+    # image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    image = models.ImageField(upload_to='profile_images/', null=True, blank=True,
+                              default=os.path.join(settings.MEDIA_ROOT, 'profile_images/user_profil.jpg'))
+
+    is_staff = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     auth_provider = models.CharField(

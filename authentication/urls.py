@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from .views import RegisterView, LogoutAPIView, SetNewPasswordAPIView, VerifyEmail, LoginAPIView, PasswordTokenCheckAPI, RequestPasswordResetEmail
 from rest_framework_simplejwt.views import (
@@ -18,3 +20,5 @@ urlpatterns = [
     path('password-reset-complete', SetNewPasswordAPIView.as_view(),
          name='password-reset-complete')
 ]
+
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
